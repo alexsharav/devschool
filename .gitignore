@@ -1,0 +1,9 @@
+# ФАЙЛЫ РАЗРАБОТКИ NODEJS
+node_modules/
+client/dist
+
+# ФАЙЛ КОНФИГУРАЦИИ
+.env
+certificate_ca.crt
+certificate.key
+certificate.crt
