@@ -1,17 +1,39 @@
 <template>
   <div class="page-wrapper">
-    <router-link class="homelink" to="/">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M15 6L9 12L15 18"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
+    <div class="tab-background">
+      <svg viewBox="0 0 1440 768" preserveAspectRatio="none">
+        <defs>
+          <radialGradient id="leftCircle" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#a3ffea" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#a3ffea" stop-opacity="0" />
+          </radialGradient>
+
+          <radialGradient id="rightCircle" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#B1FFCA" stop-opacity="0.5" />
+            <stop offset="100%" stop-color="#B1FFCA" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+
+        <circle cx="200" cy="1000" r="1200" fill="url(#leftCircle)" />
+        <circle cx="1400" cy="-200" r="1200" fill="url(#rightCircle)" />
       </svg>
-      <p>Вернуться на главную</p>
-    </router-link>
+    </div>
+
+    <div class="homelink-wrapper">
+      <router-link class="homelink" to="/">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M15 6L9 12L15 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        <p>Вернуться на главную</p>
+      </router-link>
+    </div>
 
     <div class="form-container">
       <form class="formregister" @submit.prevent="register">
@@ -172,9 +194,14 @@ async function register() {
 
   if (!username.value.trim()) {
     usernameError.value = "Поле 'Имя' обязательно.";
+  } else if (username.value.length == 1 || username.value.length > 32) {
+    usernameError.value = "Поле должно содержать от 1 до 32 символов";
   }
+
   if (!email.value.trim()) {
     emailError.value = "Поле 'Почта' обязательно.";
+  } else if (email.value.length == 1 || email.value.length > 32) {
+    emailError.value = "Поле должно содержать от 10 до 256 символов";
   }
 
   if (usernameError.value || emailError.value) {
@@ -221,6 +248,21 @@ async function register() {
 </script>
 
 <style scoped>
+.tab-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .page-wrapper {
   display: flex;
   flex-direction: column;
@@ -228,7 +270,6 @@ async function register() {
   padding-top: 20px;
   min-height: 100vh;
   width: 100%;
-  background: rgb(250, 250, 250);
 }
 
 .form-container {
@@ -239,28 +280,32 @@ async function register() {
   width: 95%;
 }
 
-.homelink {
+.homelink-wrapper {
   width: 95%;
+  display: flex;
+  align-items: left;
+}
+
+.homelink {
   margin-top: 15px;
   color: black;
   display: flex;
   flex-flow: row;
   text-decoration: none;
-}
 
-.homelink p {
-  text-align: left;
-  font-size: 19px;
-}
+  p {
+    font-size: 19px;
+  }
 
-.homelink svg {
-  height: 24px;
-  width: 24px;
-}
+  svg {
+    height: 24px;
+    width: 24px;
+  }
 
-.homelink:hover {
-  color: rgb(158, 158, 158);
-  text-decoration-line: underline;
+  &:hover {
+    color: rgb(158, 158, 158);
+    text-decoration-line: underline;
+  }
 }
 
 .formregister {
@@ -274,42 +319,42 @@ async function register() {
   background: white;
   border-radius: 16px;
   box-shadow: 3px 3px 24px rgb(199, 199, 199);
-}
 
-.formregister h1 {
-  text-align: center;
+  h1 {
+    text-align: center;
+    color: rgb(41, 41, 41);
+  }
 }
 
 .input-group {
   position: relative;
   margin-top: 24px;
-}
 
-.input-group input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(209, 246, 255, 1) 0%,
-    rgba(227, 255, 240, 1) 51%,
-    rgba(255, 252, 222, 1) 100%
-  );
-  border: none;
-  border-radius: 14px;
-  outline: none;
-  box-sizing: border-box;
-}
+  input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background: linear-gradient(
+      90deg,
+      rgba(209, 246, 255, 1) 0%,
+      rgba(227, 255, 240, 1) 51%
+    );
+    border: none;
+    border-radius: 14px;
+    outline: none;
+    box-sizing: border-box;
+  }
 
-.input-group label {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 0 4px;
-  color: gray;
-  font-size: 16px;
-  transition: 0.2s ease;
-  pointer-events: none;
+  label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 0 4px;
+    color: gray;
+    font-size: 16px;
+    transition: 0.2s ease;
+    pointer-events: none;
+  }
 }
 
 .input-group input:focus + label,
@@ -317,7 +362,6 @@ async function register() {
   top: -18px;
   left: 8px;
   font-size: 12px;
-  color: black;
 }
 
 .password-wrapper input {
@@ -334,7 +378,7 @@ async function register() {
 }
 
 button[type="submit"] {
-  background-color: rgb(39, 39, 39);
+  background-color: rgb(59, 59, 59);
   border-radius: 18px;
   color: white;
   padding: 10px;

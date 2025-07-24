@@ -4,18 +4,18 @@
       <svg viewBox="0 0 1440 768" preserveAspectRatio="none">
         <defs>
           <radialGradient id="leftCircle" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#00f767" stop-opacity="0.9" />
+            <stop offset="0%" stop-color="#00f767" stop-opacity="0.8" />
             <stop offset="100%" stop-color="#00f767" stop-opacity="0" />
           </radialGradient>
 
           <radialGradient id="rightCircle" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#0CFAE2" stop-opacity="0.9" />
+            <stop offset="0%" stop-color="#0CFAE2" stop-opacity="0.8" />
             <stop offset="100%" stop-color="#0CFAE2" stop-opacity="0" />
           </radialGradient>
         </defs>
 
-        <circle cx="200" cy="-200" r="1000" fill="url(#leftCircle)" />
-        <circle cx="1400" cy="-200" r="1000" fill="url(#rightCircle)" />
+        <circle cx="200" cy="-200" r="950" fill="url(#leftCircle)" />
+        <circle cx="1400" cy="-200" r="950" fill="url(#rightCircle)" />
       </svg>
     </div>
 
@@ -34,7 +34,7 @@ defineProps({
 
 <style scoped>
 .tab {
-  position: relative; /* нужно для абсолютного позиционирования SVG внутри */
+  position: relative;
   align-items: center;
   display: flex;
   flex-flow: column wrap;
@@ -42,7 +42,6 @@ defineProps({
   overflow: hidden;
 }
 
-/* Обёртка под SVG — фон */
 .tab-background {
   position: absolute;
   top: 0;

@@ -148,13 +148,12 @@ const router = useRouter();
 }
 
 .devschool-base-info-text {
-  background: #85ede3;
   background: linear-gradient(
     90deg,
-    rgba(133, 237, 227, 1) 0%,
+    rgb(191, 255, 249) 0%,
     rgba(161, 255, 211, 1) 33%,
-    rgb(131, 228, 130) 100%,
-    rgba(156, 227, 255, 1) 57%
+    rgb(209, 255, 208) 100%,
+    rgb(195, 238, 255) 57%
   );
 }
 
