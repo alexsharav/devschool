@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"devschool-backend/db"
-	"devschool-backend/handlers"
+	"server/db"
+	"server/handlers"
 )
 
 func main() {

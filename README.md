@@ -9,9 +9,9 @@
 
 # Инструкция для старта бекенд части
 
-1. Поменяйте папку на /devschool-backend
+1. Поменяйте папку на /server
 
-   `cd devschool-backend`
+   `cd server`
 
 2. Установите зависимости
    `go mod tidy`
@@ -35,7 +35,7 @@
 Для взаимодействия golang с postgresql базой данных вы должны иметь конфигурацию .env файла
 Например:
 
-_devschool-backend/.env :_
+_server/.env :_
 
 ```
 DB_USER=YourDatabaseUser

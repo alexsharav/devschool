@@ -1,4 +1,4 @@
-module devschool-backend
+module server
 
 go 1.20
 

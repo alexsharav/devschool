@@ -14,8 +14,8 @@
           </radialGradient>
         </defs>
 
-        <circle cx="200" cy="1000" r="1200" fill="url(#leftCircle)" />
-        <circle cx="1400" cy="-200" r="1200" fill="url(#rightCircle)" />
+        <circle cx="200" cy="1000" r="700" fill="url(#leftCircle)" />
+        <circle cx="1400" cy="-200" r="700" fill="url(#rightCircle)" />
       </svg>
     </div>
 
@@ -152,8 +152,7 @@
           Войти в имеющийся аккаунт
         </router-link>
 
-        <p v-if="error" style="color: red">{{ error }}</p>
-        <p v-if="success" style="color: green">Регистрация успешна!</p>
+        <p v-if="error" style="color: red; text-align: center">{{ error }}</p>
       </form>
     </div>
   </div>
@@ -161,6 +160,7 @@
 
 <script setup>
 import { ref } from "vue";
+import router from "@/router";
 
 const username = ref("");
 const email = ref("");
@@ -194,14 +194,14 @@ async function register() {
 
   if (!username.value.trim()) {
     usernameError.value = "Поле 'Имя' обязательно.";
-  } else if (username.value.length == 1 || username.value.length > 32) {
-    usernameError.value = "Поле должно содержать от 1 до 32 символов";
+  } else if (username.value.length == 1 || username.value.length > 30) {
+    usernameError.value = "Поле должно содержать от 1 до 30 символов";
   }
 
   if (!email.value.trim()) {
     emailError.value = "Поле 'Почта' обязательно.";
-  } else if (email.value.length == 1 || email.value.length > 32) {
-    emailError.value = "Поле должно содержать от 10 до 256 символов";
+  } else if (email.value.length == 1 || email.value.length > 50) {
+    emailError.value = "Поле должно содержать от 10 до 50 символов";
   }
 
   if (usernameError.value || emailError.value) {
@@ -240,6 +240,8 @@ async function register() {
 
     success.value = true;
     error.value = "";
+
+    router.push("/");
   } catch (err) {
     success.value = false;
     error.value = err.message;

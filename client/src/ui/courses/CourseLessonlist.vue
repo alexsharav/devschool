@@ -1,7 +1,4 @@
 <template>
-  <Header />
-  <CourseTab :courseMainText="courseTitle" :courseSecondaryText="courseDesc" />
-
   <div class="lessons-list">
     <div v-for="(chapter, chapterIndex) in chapters" class="flex-div">
       <h1 class="chapter-header">
@@ -17,15 +14,9 @@
       </router-link>
     </div>
   </div>
-
-  <Footer />
 </template>
 
 <script setup>
-import Footer from "../mainComponents/Footer.vue";
-import Header from "../mainComponents/Header.vue";
-import CourseTab from "./CourseTab.vue";
-
 defineProps({
   courseTitle: String,
   courseDesc: String,

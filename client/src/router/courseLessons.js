@@ -1,5 +1,5 @@
-import pythonBg from "@/views/bgImages/courses-python-bg.png";
-import dataAnalysisBg from "@/views/bgImages/courses-data-analysis-bg.png";
+import pythonBg from "@/assets/courses-python-bg.png";
+import dataAnalysisBg from "@/assets/courses-data-analysis-bg.png";
 
 export default {
   Python: {

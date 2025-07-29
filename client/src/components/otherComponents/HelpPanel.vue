@@ -218,7 +218,7 @@ function helpSetter(fieldName, newValue) {
 }
 
 .submit-button {
-  background-color: #111;
+  background-color: #3b3b3b;
   color: white;
   padding: 12px;
   font-size: 16px;

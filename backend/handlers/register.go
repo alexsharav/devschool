@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"devschool-backend/models"
 	"golang.org/x/crypto/bcrypt"
+	"server/models"
 )
 
 func RegisterHandler(db *sql.DB) http.HandlerFunc {

@@ -1,12 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "@/views/mainPages/Home.view.vue";
-import RegisterView from "@/views/auth/Register.view.vue";
-import ProfileView from "@/views/userPages/Profile.view.vue";
-import LoginView from "@/views/auth/Login.view.vue";
-import CoursesView from "@/views/mainPages/Courses.view.vue";
-import HelpView from "@/views/mainPages/Help.view.vue";
-import TestsView from "@/views/mainPages/Tests.view.vue";
-import UserPanelView from "@/views/userPages/UserPanel.view.vue";
+import HomeView from "@/pages/mainPages/Home.view.vue";
+import RegisterView from "@/pages/auth/Register.view.vue";
+import LoginView from "@/pages/auth/Login.view.vue";
+import CoursesView from "@/pages/mainPages/Courses.view.vue";
+import HelpView from "@/pages/mainPages/Help.view.vue";
+import TestsView from "@/pages/mainPages/Tests.view.vue";
+import UserPanelView from "@/pages/userPages/UserPanel.view.vue";
 
 const routes = [
   {
@@ -26,12 +25,6 @@ const routes = [
     name: "registration",
     meta: { title: "Регистрация" },
     component: RegisterView,
-  },
-  {
-    path: "/profile",
-    name: "profile",
-    meta: { title: "Профиль" },
-    component: ProfileView,
   },
   {
     path: "/courses",
@@ -60,12 +53,12 @@ const routes = [
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    component: () => import("@/views/NotFound.vue"),
+    component: () => import("@/pages/otherPages/NotFound.vue"),
     meta: { title: "Страница не найдена" },
   },
 ];
 
-const coursePages = import.meta.glob("@/views/courses/*/*Course.vue");
+const coursePages = import.meta.glob("@/pages/courses/*/*Course.vue");
 for (const path in coursePages) {
   const match = path.match(/\/courses\/([^/]+)\/[^/]+Course\.vue$/);
   if (match) {
@@ -79,7 +72,7 @@ for (const path in coursePages) {
   }
 }
 
-const lessonPages = import.meta.glob("@/views/courses/*/chapters/*/*.vue");
+const lessonPages = import.meta.glob("@/pages/courses/*/chapters/*/*.vue");
 for (const path in lessonPages) {
   const match = path.match(
     /\/courses\/([^/]+)\/chapters\/([0-9]+)\/([0-9.]+)\.vue$/,

@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import devschoolPNG from '@/views/bgImages/devschool.png'
+import devschoolPNG from '@/assets/devschool.png'
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 const isFixed = ref(false)
 const curDate = new Date().getFullYear();

@@ -4,18 +4,18 @@
       <svg viewBox="0 0 1440 768" preserveAspectRatio="none">
         <defs>
           <radialGradient id="leftCircle" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#87FFB9" stop-opacity="1" />
+            <stop offset="0%" stop-color="#87FFB9" stop-opacity="0.7" />
             <stop offset="100%" stop-color="#87FFB9" stop-opacity="0" />
           </radialGradient>
 
           <radialGradient id="rightCircle" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#F8FFB0" stop-opacity="1" />
+            <stop offset="0%" stop-color="#F8FFB0" stop-opacity="0.7" />
             <stop offset="100%" stop-color="#F8FFB0" stop-opacity="0" />
           </radialGradient>
         </defs>
 
-        <circle cx="200" cy="1000" r="1200" fill="url(#leftCircle)" />
-        <circle cx="1400" cy="-200" r="1200" fill="url(#rightCircle)" />
+        <circle cx="200" cy="1000" r="700" fill="url(#leftCircle)" />
+        <circle cx="1400" cy="-200" r="700" fill="url(#rightCircle)" />
       </svg>
     </div>
 
@@ -100,7 +100,7 @@
           Зарегистрировать новый аккаунт
         </router-link>
 
-        <p v-if="error" style="color: red">{{ error }}</p>
+        <p v-if="error" style="color: red; text-align: center">{{ error }}</p>
       </form>
     </div>
   </div>
@@ -146,15 +146,8 @@ async function login() {
       }),
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(text || "Ошибка входа");
-    }
-
     success.value = true;
     error.value = "";
-
-    router.push("/");
   } catch (err) {
     success.value = false;
     error.value = err.message;
@@ -248,12 +241,12 @@ async function login() {
 
   input {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     font-size: 16px;
     background: linear-gradient(
       90deg,
-      rgb(204, 255, 234) 5%,
-      rgb(211, 255, 170) 90%
+      rgb(223, 255, 228) 25%,
+      rgb(251, 255, 223) 75%
     );
     border: none;
     border-radius: 14px;
