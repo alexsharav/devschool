@@ -19,5 +19,3 @@ import Footer from "@/ui/main/Footer.vue";
 import CourseInfo from "@/ui/courses/CourseInfo.vue";
 import courseLessons from "@/router/courseLessons";
 </script>
-
-<style scoped></style>

@@ -9,9 +9,6 @@
       <router-link to="/courses">Курсы</router-link>
       <router-link to="/tests">Тесты</router-link>
       <router-link to="/help">Поддержка</router-link>
-      <router-link v-if="token" to="/user-panel"
-        >Панель пользователя</router-link
-      >
 
       <button class="profile-box-mobile" @click="profileButton">
         <p class="profile-link">Профиль</p>
@@ -58,9 +55,9 @@
 <script setup>
 import devschoolPNG from "@/assets/devschool.png";
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { getCookie } from "@/utils/cookie";
+import { hasCookie } from "@/modules/auth/cookie";
 import router from "@/router";
-const token = getCookie("tkn");
+const token = hasCookie("tkn");
 const showMenu = ref(false);
 
 function toggleMenu() {

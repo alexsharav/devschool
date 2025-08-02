@@ -5,7 +5,6 @@ import LoginView from "@/pages/auth/Login.view.vue";
 import CoursesView from "@/pages/mainPages/Courses.view.vue";
 import HelpView from "@/pages/mainPages/Help.view.vue";
 import TestsView from "@/pages/mainPages/Tests.view.vue";
-import UserPanelView from "@/pages/userPages/UserPanel.view.vue";
 
 const routes = [
   {
@@ -43,12 +42,6 @@ const routes = [
     name: "tests",
     meta: { title: "Тесты" },
     component: TestsView,
-  },
-  {
-    path: "/user-panel",
-    name: "user-panel",
-    meta: { title: "Панель пользователя" },
-    component: UserPanelView,
   },
   {
     path: "/:pathMatch(.*)*",

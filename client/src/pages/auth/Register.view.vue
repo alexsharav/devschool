@@ -144,6 +144,12 @@
           </span>
         </div>
 
+        <div
+          id="captcha"
+          class="captcha"
+          data-sitekey="6LelWpgrAAAAADeeNQEUvmJZ2yssQooXXzGtHcP2"
+        ></div>
+
         <button type="submit">Зарегистрироваться</button>
 
         <div class="divider">или</div>
@@ -159,97 +165,65 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import router from "@/router";
+import { ref, onMounted } from "vue";
+import { register as performRegister } from "@/modules/auth/register";
 
+const captchaToken = ref("");
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
+
 const showPassword = ref(false);
-const success = ref(false);
 const error = ref("");
 const usernameError = ref("");
 const emailError = ref("");
+const passwordError = ref("");
 
 function togglePassword() {
   showPassword.value = !showPassword.value;
 }
 
-function validatePassword(pwd) {
-  const minLength = 8;
-  const hasUpperCase = /[A-Z]/.test(pwd);
-  const hasNumber = /\d/.test(pwd);
-
-  if (pwd.length < minLength) return "Пароль должен быть не короче 8 символов.";
-  if (!hasUpperCase)
-    return "Пароль должен содержать хотя бы одну заглавную букву.";
-  if (!hasNumber) return "Пароль должен содержать хотя бы одну цифру.";
-  return "";
-}
-
 async function register() {
-  usernameError.value = "";
-  emailError.value = "";
-
-  if (!username.value.trim()) {
-    usernameError.value = "Поле 'Имя' обязательно.";
-  } else if (username.value.length == 1 || username.value.length > 30) {
-    usernameError.value = "Поле должно содержать от 1 до 30 символов";
-  }
-
-  if (!email.value.trim()) {
-    emailError.value = "Поле 'Почта' обязательно.";
-  } else if (email.value.length == 1 || email.value.length > 50) {
-    emailError.value = "Поле должно содержать от 10 до 50 символов";
-  }
-
-  if (usernameError.value || emailError.value) {
-    success.value = false;
-    return;
-  }
-
-  const pwdError = validatePassword(password.value);
-  if (pwdError) {
-    passwordError.value = pwdError;
-    success.value = false;
-    return;
-  }
-
-  if (password.value !== confirmPassword.value) {
-    error.value = "Пароли не совпадают.";
-    success.value = false;
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:8080/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: username.value,
-        email: email.value,
-        password: password.value,
-      }),
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(text);
-    }
-
-    success.value = true;
-    error.value = "";
-
-    router.push("/");
-  } catch (err) {
-    success.value = false;
-    error.value = err.message;
-  }
+  await performRegister(
+    username,
+    email,
+    password,
+    confirmPassword,
+    error,
+    usernameError,
+    emailError,
+    passwordError,
+    captchaToken
+  );
 }
+
+onMounted(() => {
+  if (window.grecaptcha) {
+    window.grecaptcha.ready(() => {
+      window.grecaptcha.render("captcha", {
+        sitekey: "6LelWpgrAAAAADeeNQEUvmJZ2yssQooXXzGtHcP2",
+        callback: (token) => {
+          captchaToken.value = token;
+        },
+        "error-callback": () => {
+          error.value = "Ошибка загрузки капчи.";
+        },
+        "expired-callback": () => {
+          captchaToken.value = "";
+        },
+      });
+    });
+  }
+});
 </script>
 
 <style scoped>
+.captcha {
+  margin-top: 15px;
+  align-self: center;
+}
+
 .tab-background {
   position: absolute;
   top: 0;
@@ -384,7 +358,7 @@ button[type="submit"] {
   border-radius: 18px;
   color: white;
   padding: 10px;
-  margin-top: 30px;
+  margin-top: 15px;
   border: none;
   font-size: 16px;
   font-weight: bold;

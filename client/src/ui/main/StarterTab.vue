@@ -87,13 +87,13 @@ defineProps({
 
 @media (max-width: 400px) {
   .dev-tab-desc {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .dev-tab-main-text {
-    font-size: 22px;
+    font-size: 30px;
     margin-top: 120px;
-    padding: 10px 0px;
+    padding: 5px 0px;
   }
 }
 </style>

@@ -37,7 +37,7 @@
 
     <div class="form-container">
       <form class="formlogin" @submit.prevent="login">
-        <h1>Авторизация</h1>
+        <h1>Аутентификация</h1>
 
         <div class="input-group">
           <input id="email" v-model="email" type="email" placeholder=" " />
@@ -92,6 +92,12 @@
         </div>
         <p v-if="passwordError" class="error-message">{{ passwordError }}</p>
 
+        <div
+          id="captcha"
+          class="captcha"
+          data-sitekey="6LelWpgrAAAAADeeNQEUvmJZ2yssQooXXzGtHcP2"
+        ></div>
+
         <button type="submit">Войти</button>
 
         <div class="divider">или</div>
@@ -107,55 +113,58 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { login as performLogin } from "@/modules/auth/login";
 
+const captchaToken = ref("");
 const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
-const success = ref(false);
 const error = ref("");
-
-const router = useRouter();
+const emailError = ref("");
+const passwordError = ref("");
 
 function togglePassword() {
   showPassword.value = !showPassword.value;
 }
 
 async function login() {
-  if (!email.value.trim()) {
-    error.value = "Поле почта не заполнено";
-    success.value = false;
-    return;
-  }
-
-  if (!password.value.trim()) {
-    error.value = "Пароль не введен";
-    success.value = false;
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:8080/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-      }),
-    });
-
-    success.value = true;
-    error.value = "";
-  } catch (err) {
-    success.value = false;
-    error.value = err.message;
-  }
+  await performLogin(
+    email,
+    password,
+    error,
+    emailError,
+    passwordError,
+    captchaToken
+  );
 }
+
+onMounted(() => {
+  if (window.grecaptcha) {
+    window.grecaptcha.ready(() => {
+      window.grecaptcha.render("captcha", {
+        sitekey: "6LelWpgrAAAAADeeNQEUvmJZ2yssQooXXzGtHcP2",
+        callback: (token) => {
+          captchaToken.value = token;
+        },
+        "error-callback": () => {
+          error.value = "Ошибка загрузки капчи.";
+        },
+        "expired-callback": () => {
+          captchaToken.value = "";
+        },
+      });
+    });
+  }
+});
 </script>
 
 <style scoped>
+.captcha {
+  margin-top: 15px;
+  align-self: center;
+}
+
 .tab-background {
   position: absolute;
   top: 0;
@@ -291,7 +300,7 @@ button[type="submit"] {
   border-radius: 18px;
   color: white;
   padding: 10px;
-  margin-top: 30px;
+  margin-top: 15px;
   border: none;
   font-size: 16px;
   font-weight: bold;

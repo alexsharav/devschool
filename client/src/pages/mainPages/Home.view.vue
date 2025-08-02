@@ -49,9 +49,7 @@
 import Header from "@/ui/main/Header.vue";
 import Footer from "@/ui/main/Footer.vue";
 import StarterTab from "@/ui/main/StarterTab.vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
+import router from "@/router";
 </script>
 
 <style scoped>

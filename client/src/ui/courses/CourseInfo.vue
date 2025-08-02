@@ -22,8 +22,7 @@
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
-const router = useRouter();
+import router from "@/router";
 
 defineProps({
   imageLink: [String, Object],

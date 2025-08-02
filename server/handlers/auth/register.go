@@ -9,9 +9,9 @@ import (
 	"server/models"
 )
 
-func RegisterHandler(db *sql.DB) http.HandlerFunc {
+func RegisterHandler(db *sql.DB, client string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", client)
 		w.Header().Set("Content-Type", "application/json")
 
 		if r.Method == http.MethodOptions {
