@@ -57,8 +57,6 @@ import devschoolPNG from "@/assets/devschool.png";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { hasCookie } from "@/modules/auth/cookie";
 import router from "@/router/router";
-
-const token = ref(hasCookie("token"));
 const showMenu = ref(false);
 
 function toggleMenu() {
@@ -72,7 +70,7 @@ function handleResize() {
 }
 
 function profileButton() {
-  if (token) {
+  if (hasCookie("token")) {
     router.push("/profile");
   } else {
     router.push("/login");
