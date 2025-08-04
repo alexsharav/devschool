@@ -3,15 +3,16 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"net/http"
-
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
 	"server/models"
+	"server/tools/captcha"
 )
 
 func RegisterHandler(db *sql.DB, client string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", client)
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Content-Type", "application/json")
 
 		if r.Method == http.MethodOptions {
@@ -24,6 +25,11 @@ func RegisterHandler(db *sql.DB, client string) http.HandlerFunc {
 		var req models.RegisterRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, "Invalid input", http.StatusBadRequest)
+			return
+		}
+
+		if !captcha.Verify(req.Token) {
+			http.Error(w, "reCAPTCHA verification failed", http.StatusForbidden)
 			return
 		}
 

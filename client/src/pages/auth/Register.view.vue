@@ -168,6 +168,7 @@
 import { ref, onMounted } from "vue";
 import { register as performRegister } from "@/modules/auth/register";
 
+const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const captchaToken = ref("");
 const username = ref("");
 const email = ref("");
@@ -202,7 +203,7 @@ onMounted(() => {
   if (window.grecaptcha) {
     window.grecaptcha.ready(() => {
       window.grecaptcha.render("captcha", {
-        sitekey: "6LelWpgrAAAAADeeNQEUvmJZ2yssQooXXzGtHcP2",
+        sitekey: siteKey,
         callback: (token) => {
           captchaToken.value = token;
         },
@@ -362,7 +363,6 @@ button[type="submit"] {
   border: none;
   font-size: 16px;
   font-weight: bold;
-  cursor: pointer;
   width: 100%;
   transition: 0.4s ease;
 }

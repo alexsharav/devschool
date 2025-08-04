@@ -1,4 +1,4 @@
-import router from "@/router";
+import router from "@/router/router";
 
 function validatePassword(pwd) {
   const minLength = 8;
@@ -49,8 +49,7 @@ async function register(username, email, password, confirmPassword, error, usern
     return;
   }
 
-  console.log(123)
-
+  console.log(captchaRef.value)
   try {
     const response = await fetch("http://localhost:8080/register", {
       method: "POST",
@@ -59,6 +58,7 @@ async function register(username, email, password, confirmPassword, error, usern
         username: username.value,
         email: email.value,
         password: password.value,
+        token: captchaRef.value,
       }),
     });
 

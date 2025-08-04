@@ -49,7 +49,7 @@
 import Header from "@/ui/main/Header.vue";
 import Footer from "@/ui/main/Footer.vue";
 import StarterTab from "@/ui/main/StarterTab.vue";
-import router from "@/router";
+import router from "@/router/router";
 </script>
 
 <style scoped>

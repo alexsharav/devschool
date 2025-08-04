@@ -1,4 +1,4 @@
-import router from "@/router";
+import router from "@/router/router";
 
 async function login(email, password, error, emailError, passwordError, captchaRef) {
   error.value = "";
@@ -30,6 +30,7 @@ async function login(email, password, error, emailError, passwordError, captchaR
       body: JSON.stringify({
         email: email.value,
         password: password.value,
+        token: captchaRef.value,
       }),
       credentials: "include",
     });
