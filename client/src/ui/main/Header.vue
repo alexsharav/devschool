@@ -1,25 +1,33 @@
 <template>
-  <header :class="['header-box', { 'header-fixer': showMenu }]">
+  <header :class="['header-box', { 'header-fixer': showMenu }]" role="banner">
     <router-link to="/" class="dev-head-main">
-      <img class="devschool-cat" :src="devschoolPNG" />
+      <img class="devschool-cat" :src="devschoolPNG" alt="dev.school logo" />
       дев.школа
     </router-link>
 
-    <nav :class="['nav-bar', { 'nav-visible': showMenu }]">
+    <!-- Десктопная навигация -->
+    <nav class="nav-bar desktop-only" aria-label="Главная навигация">
       <router-link to="/courses">Курсы</router-link>
       <router-link to="/tests">Тесты</router-link>
-      <router-link to="/help">Поддержка</router-link>
-
-      <button class="profile-box-mobile" @click="profileButton">
-        <p class="profile-link">Профиль</p>
-      </button>
+      <router-link to="/media">Медиа</router-link>
     </nav>
 
-    <button class="profile-box" @click="profileButton">
+    <button
+      class="profile-box desktop-only"
+      @click="profileButton"
+      type="button"
+    >
       <p class="profile-link">Профиль</p>
     </button>
 
-    <button class="display-button" @click="toggleMenu">
+    <!-- Кнопка бургер (мобайл) -->
+    <button
+      class="display-button mobile-only"
+      :aria-expanded="showMenu ? 'true' : 'false'"
+      aria-controls="mobile-nav"
+      @click="toggleMenu"
+      type="button"
+    >
       <svg
         v-if="showMenu"
         class="x-image"
@@ -49,83 +57,130 @@
         <line x1="3" y1="18" x2="21" y2="18" />
       </svg>
     </button>
+
+    <!-- Мобильная навигация с плавной высотой (0.5s) -->
+    <Transition @enter="onEnter" @after-enter="onAfterEnter" @leave="onLeave">
+      <nav
+        v-show="showMenu"
+        id="mobile-nav"
+        class="nav-bar mobile-panel"
+        aria-label="Главная навигация (мобильная)"
+      >
+        <router-link to="/courses" @click="closeMenu">Курсы</router-link>
+        <router-link to="/tests" @click="closeMenu">Тесты</router-link>
+        <router-link to="/media" @click="closeMenu">Медиа</router-link>
+
+        <button
+          class="profile-box-mobile"
+          @click="onMobileProfile"
+          type="button"
+        >
+          <p class="profile-link">Профиль</p>
+        </button>
+      </nav>
+    </Transition>
   </header>
 </template>
 
 <script setup>
 import devschoolPNG from "@/assets/devschool.png";
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { hasCookie } from "@/modules/auth/cookie";
+import { hasCookie } from "@/modules/tokens/cookie";
 import router from "@/router/router";
+
 const showMenu = ref(false);
 
 function toggleMenu() {
   showMenu.value = !showMenu.value;
 }
+function closeMenu() {
+  showMenu.value = false;
+}
 
-function handleResize() {
-  if (window.innerWidth > 930) {
-    showMenu.value = false;
-  }
+/* Плавное раскрытие/сворачивание: ровно 0.5s (height + opacity) */
+function onEnter(el) {
+  el.style.height = "0px";
+  el.style.opacity = "0";
+  void el.offsetHeight; // force reflow
+  el.style.transition = "height 500ms ease, opacity 100ms ease";
+  el.style.height = el.scrollHeight + "px";
+  el.style.opacity = "1";
+}
+function onAfterEnter(el) {
+  el.style.height = "auto";
+  el.style.transition = "";
+}
+function onLeave(el) {
+  el.style.height = el.scrollHeight + "px";
+  el.style.opacity = "1";
+  void el.offsetHeight;
+  el.style.transition = "height 500ms ease, opacity 500ms ease";
+  el.style.height = "0px";
+  el.style.opacity = "0";
 }
 
 function profileButton() {
-  if (hasCookie("token")) {
-    router.push("/profile");
-  } else {
-    router.push("/login");
-  }
+  if (hasCookie("token")) router.push("/profile");
+  else router.push("/login");
 }
 
-onMounted(() => {
-  window.addEventListener("resize", handleResize);
-});
+function onMobileProfile() {
+  closeMenu();
+  profileButton();
+}
 
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", handleResize);
-});
+/* Закрывать меню при ресайзе на десктоп */
+function handleResize() {
+  if (window.innerWidth > 930) showMenu.value = false;
+}
+onMounted(() => window.addEventListener("resize", handleResize));
+onBeforeUnmount(() => window.removeEventListener("resize", handleResize));
 </script>
 
 <style scoped>
 .header-box {
   position: fixed;
   top: 30px;
-  display: flex;
   left: 0;
   right: 0;
   margin: 0 auto;
-  flex-flow: row wrap;
-  justify-content: space-between;
+  z-index: 10;
+
+  display: flex;
   align-items: center;
-  z-index: 1;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
   width: 99%;
-  min-height: 64px;
   max-width: 1200px;
-  padding: 4px 4px;
-  background: white;
+  min-height: 64px;
+  padding: 4px;
+
+  background: #fff;
   border: 1px solid rgb(221, 221, 221);
   border-radius: 16px;
+}
+.header-fixer {
+  border-radius: 16px 16px 0 0;
 }
 
 .devschool-cat {
   width: 50px;
   height: 50px;
 }
-
 .dev-head-main {
   display: flex;
   align-items: center;
+  gap: 8px;
+  padding-left: 15px;
   font-size: 24px;
-  font-weight: bolder;
-  padding: 0px 0px 0px 15px;
-  gap: 5px;
-  color: rgb(8, 8, 8);
+  font-weight: 800;
+  color: #080808;
   text-decoration: none;
 }
 
 .nav-bar {
   display: flex;
-  flex-flow: wrap;
   gap: 20px;
 }
 
@@ -134,127 +189,105 @@ onBeforeUnmount(() => {
   color: rgb(95, 95, 95);
   font-size: 16px;
   border: none;
-  background: rgb(255, 255, 255);
+  background: #fff;
   border-radius: 8px;
-  padding: 15px 24px;
-  transition: background 0.3s ease;
+  padding: 12px 20px;
+  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
-
 .nav-bar a:hover {
-  background: rgba(216, 216, 216, 0.253);
-  color: rgb(0, 0, 0);
+  background: rgba(216, 216, 216, 0.25);
+  color: #000;
 }
 
-.profile-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  border: none;
-  background: white;
-}
-
+.profile-box,
 .profile-box-mobile {
   border: none;
-  display: none;
-  background: white;
+  background: transparent;
 }
-
 .profile-link {
   background: rgb(59, 59, 59);
-  color: white;
+  color: #fff;
   border: none;
-  padding: 15px;
+  padding: 12px 16px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   border-radius: 10px;
   cursor: pointer;
-  text-decoration: none;
-  transition: background 0.4s ease;
-
-  &:hover {
-    background: #555555;
-  }
+  transition: background 0.25s ease;
+}
+.profile-link:hover {
+  background: #555555;
 }
 
 .display-button {
   border: none;
   background: none;
-  display: none;
-  padding: 0px 25px;
+  padding: 0 16px;
   cursor: pointer;
 }
-
 svg {
   width: 24px;
   height: 24px;
 }
 
-@media (max-width: 930px) {
-  .profile-box {
-    display: none;
-  }
-
-  .display-button {
-    display: block;
-  }
-
-  .profile-box-mobile {
-    display: block;
-  }
-
-  .header-fixer {
-    border-radius: 16px 16px 0px 0px;
-  }
-
-  .nav-bar {
-    display: none;
-    flex-direction: column;
-    width: calc(100% + 2px);
-    margin-top: -10px;
-    background-color: white;
-    padding: 10px 10px;
-    margin-left: -1px;
-    gap: 10px;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    border: 1px solid rgb(221, 221, 221);
-    border-top: none;
-    border-radius: 0px 0px 16px 16px;
-  }
-
-  .nav-visible {
-    display: flex;
-  }
+/* Desktop / Mobile switches */
+.desktop-only {
+  display: flex;
+}
+.mobile-only {
+  display: none;
 }
 
+/* Мобильная панель (анимация через JS-хуки, поэтому только overflow:hidden) */
+.mobile-panel {
+  flex-direction: column;
+  width: calc(100% + 2px);
+  margin-top: -10px;
+  margin-left: -1px;
+
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  background: #fff;
+  padding: 10px;
+  gap: 10px;
+
+  border: 1px solid rgb(221, 221, 221);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+
+  overflow: hidden;
+}
+.profile-box-mobile {
+  display: block;
+}
+
+@media (max-width: 930px) {
+  .desktop-only {
+    display: none;
+  }
+  .mobile-only {
+    display: block;
+  }
+}
 @media (max-width: 450px) {
   .dev-head-main {
     font-size: 20px;
   }
-
   .header-box {
     min-height: 55px;
   }
-
-  .three-lines-image {
-    width: 18px;
-    height: 18px;
+  .display-button svg {
+    width: 20px;
+    height: 20px;
   }
-
-  .x-image {
-    width: 15px;
-    height: 15px;
+  .nav-bar a {
+    font-size: 14px;
+    padding: 10px 14px;
   }
-
-  .nav-bar {
-    a {
-      font-size: 13px;
-    }
-  }
-
   .profile-link {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 </style>

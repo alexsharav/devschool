@@ -6,6 +6,7 @@ import (
 
 	"server/db"
 	"server/handlers/auth"
+	"server/handlers/tokens"
 )
 
 func main() {
@@ -22,8 +23,10 @@ func main() {
 	}
 	defer database.Close()
 
-	serverMux.HandleFunc("/register", handlers.RegisterHandler(database, client))
-	serverMux.HandleFunc("/login", handlers.LoginHandler(database, client))
+	serverMux.HandleFunc("/register", auth.RegisterHandler(database, client))
+	serverMux.HandleFunc("/login", auth.LoginHandler(database, client))
+	serverMux.HandleFunc("/refresh", tokens.RefreshHandler())
+	serverMux.HandleFunc("/logout", tokens.LogoutHandler())
 
 	log.Printf("Backend running %s", server.Addr)
 	log.Fatal(server.ListenAndServe())

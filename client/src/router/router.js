@@ -3,8 +3,8 @@ import HomeView from "@/pages/mainPages/Home.view.vue";
 import RegisterView from "@/pages/auth/Register.view.vue";
 import LoginView from "@/pages/auth/Login.view.vue";
 import CoursesView from "@/pages/mainPages/Courses.view.vue";
-import HelpView from "@/pages/mainPages/Help.view.vue";
 import TestsView from "@/pages/mainPages/Tests.view.vue";
+import MediaView from "@/pages/mainPages/Media.view.vue"
 
 const routes = [
   {
@@ -12,6 +12,12 @@ const routes = [
     name: "home",
     meta: { title: "Дев.Школа" },
     component: HomeView,
+  },
+  {
+    path: "/media",
+    name: "media",
+    meta: { title: "Дев.Школа Медиа" },
+    component: MediaView,
   },
   {
     path: "/login",
@@ -30,12 +36,6 @@ const routes = [
     name: "courses",
     meta: { title: "Курсы" },
     component: CoursesView,
-  },
-  {
-    path: "/help",
-    name: "help",
-    meta: { title: "Поддержка" },
-    component: HelpView,
   },
   {
     path: "/tests",

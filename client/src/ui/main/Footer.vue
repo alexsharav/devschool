@@ -1,58 +1,57 @@
 <template>
-    <footer class='footer-box'>
-        <router-link to="/" class="dev-head-main">
-            <img class='devschool-cat' :src="devschoolPNG">
-            дев.школа
-        </router-link>
-        <h1 class="devschool-footer-text">{{ curDate }} pre-alpha</h1>
-    </footer>
+  <footer class="footer-box">
+    <router-link to="/" class="dev-head-main">
+      <img class="devschool-cat" :src="devschoolPNG" />
+      дев.школа
+    </router-link>
+    <h1 class="devschool-footer-text">{{ curDate }} pre-alpha</h1>
+  </footer>
 </template>
 
 <script setup>
-import devschoolPNG from '@/assets/devschool.png'
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-const isFixed = ref(false)
+import devschoolPNG from "@/assets/devschool.png";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
+const isFixed = ref(false);
 const curDate = new Date().getFullYear();
 
 const updateFooterPosition = () => {
-    nextTick(() => {
-        isFixed.value = document.body.scrollHeight <= window.innerHeight
-    })
-}
+  nextTick(() => {
+    isFixed.value = document.body.scrollHeight <= window.innerHeight;
+  });
+};
 
 onMounted(() => {
-    updateFooterPosition()
-    window.addEventListener('resize', updateFooterPosition)
-})
+  updateFooterPosition();
+  window.addEventListener("resize", updateFooterPosition);
+});
 
 onBeforeUnmount(() => {
-    window.removeEventListener('resize', updateFooterPosition)
-})
+  window.removeEventListener("resize", updateFooterPosition);
+});
 </script>
 
 <style scoped>
 .footer-box {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1;
-    width: 90%;
-    max-width: 1200px;
-    min-height: 64px;
-    margin-top: 40px;
-    height: 85px;
-    border-top: 1px solid rgba(151, 151, 151, 0.815);
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+  width: 90%;
+  max-width: 1200px;
+  min-height: 64px;
+  margin-top: 70px;
+  height: 85px;
 }
 
 .dev-head-main {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .devschool-footer-text {
-    font-weight: normal;
-    font-size: 20px;
-    color: rgb(116, 116, 116);
+  font-weight: normal;
+  font-size: 20px;
+  color: rgb(116, 116, 116);
 }
 
 .devschool-cat {
@@ -72,18 +71,16 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 750px) {
-
-    .devschool-footer-text,
-    .dev-head-main {
-        font-size: 17px;
-    }
+  .devschool-footer-text,
+  .dev-head-main {
+    font-size: 17px;
+  }
 }
 
 @media (max-width: 500px) {
-
-    .devschool-footer-text,
-    .dev-head-main {
-        font-size: 15px;
-    }
+  .devschool-footer-text,
+  .dev-head-main {
+    font-size: 15px;
+  }
 }
 </style>

@@ -114,7 +114,6 @@ function helpSetter(fieldName, newValue) {
   height: auto;
   display: flex;
   flex-flow: row wrap;
-  margin-top: 150px;
 }
 
 .contact-information {

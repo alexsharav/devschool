@@ -1,4 +1,4 @@
-package handlers
+package auth
 
 import (
 	"database/sql"
@@ -38,10 +38,12 @@ func LoginHandler(db *sql.DB, client string) http.HandlerFunc {
 			return
 		}
 
-		var hashedPassword string
+		var hashedPassword, username string
 		var userID int
 
-		err := db.QueryRow("SELECT id, password FROM users WHERE email = $1", req.Email).Scan(&userID, &hashedPassword)
+		// Получаем user_id, пароль и username
+		err := db.QueryRow("SELECT id, password, username FROM users WHERE email = $1", req.Email).
+			Scan(&userID, &hashedPassword, &username)
 		if err == sql.ErrNoRows {
 			http.Error(w, "Неверный логин или пароль", http.StatusUnauthorized)
 			return
@@ -56,25 +58,52 @@ func LoginHandler(db *sql.DB, client string) http.HandlerFunc {
 			return
 		}
 
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"user_id": userID,
-			"exp":     time.Now().Add(time.Hour * 24 * 30).Unix(), // 30 дней
+		// Access Token: 15 мин
+		accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"user_id":  userID,
+			"email":    req.Email,
+			"username": username,
+			"exp":      time.Now().Add(15 * time.Minute).Unix(),
 		})
 
-		tokenString, err := token.SignedString(jwtSecret)
+		accessTokenString, err := accessToken.SignedString(jwtSecret)
 		if err != nil {
-			http.Error(w, "Ошибка создания токена", http.StatusInternalServerError)
+			http.Error(w, "Ошибка создания access token", http.StatusInternalServerError)
+			return
+		}
+
+		// Refresh Token: 30 дней
+		refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"user_id":  userID,
+			"email":    req.Email,
+			"username": username,
+			"exp":      time.Now().Add(30 * 24 * time.Hour).Unix(),
+		})
+
+		refreshTokenString, err := refreshToken.SignedString(jwtSecret)
+		if err != nil {
+			http.Error(w, "Ошибка создания refresh token", http.StatusInternalServerError)
 			return
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "token",
-			Value:    tokenString,
+			Name:     "access_token",
+			Value:    accessTokenString,
+			Path:     "/",
+			Expires:  time.Now().Add(15 * time.Minute),
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+			Secure:   false,
+		})
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "refresh_token",
+			Value:    refreshTokenString,
 			Path:     "/",
 			Expires:  time.Now().Add(30 * 24 * time.Hour),
 			HttpOnly: true,
-			Secure:   false, // true при HTTPS
 			SameSite: http.SameSiteLaxMode,
+			Secure:   false,
 		})
 
 		json.NewEncoder(w).Encode(map[string]string{"message": "Login successful"})
