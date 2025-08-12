@@ -85,7 +85,7 @@
 <script setup>
 import devschoolPNG from "@/assets/devschool.png";
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { hasCookie } from "@/modules/tokens/cookie";
+import token from "@/modules/tokens/token";
 import router from "@/router/router";
 
 const showMenu = ref(false);
@@ -120,7 +120,7 @@ function onLeave(el) {
 }
 
 function profileButton() {
-  if (hasCookie("token")) router.push("/profile");
+  if (token.getAccessToken()) router.push("/profile");
   else router.push("/login");
 }
 

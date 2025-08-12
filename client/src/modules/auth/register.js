@@ -2,10 +2,12 @@ import router from "@/router/router";
 
 function validatePassword(pwd) {
   const minLength = 8;
+  const maxLength = 100;
   const hasUpperCase = /[A-Z]/.test(pwd);
   const hasNumber = /\d/.test(pwd);
 
   if (pwd.length < minLength) return "Пароль должен быть не короче 8 символов.";
+  if (pwd.length > maxLength) return "Пароль должен быть длинее 100 символов.";
   if (!hasUpperCase)
     return "Пароль должен содержать хотя бы одну заглавную букву.";
   if (!hasNumber) return "Пароль должен содержать хотя бы одну цифру.";
@@ -21,14 +23,14 @@ async function register(username, email, password, confirmPassword, error, usern
   
   if (!username.value.trim()) {
     usernameError.value = "Поле 'Имя' обязательно.";
-  } else if (username.value.length < 2 || username.value.length > 30) {
-    usernameError.value = "Имя должно быть от 2 до 30 символов.";
+  } else if (username.value.length < 1 || username.value.length > 50) {
+    usernameError.value = "Имя должно быть от 1 до 50 символов.";
   }
 
   if (!email.value.trim()) {
     emailError.value = "Поле 'Почта' обязательно.";
-  } else if (email.value.length < 10 || email.value.length > 50) {
-    emailError.value = "Почта должна быть от 10 до 50 символов.";
+  } else if (email.value.length < 1 || username.value.length > 100) {
+    emailError.value = "Эмейл должен быть от 1 до 100 символов.";
   }
 
   const pwdError = validatePassword(password.value);

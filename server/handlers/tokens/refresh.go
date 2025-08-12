@@ -1,7 +1,6 @@
 package tokens
 
 import (
-	"encoding/json"
 	"github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"os"
@@ -34,19 +33,23 @@ func RefreshHandler() http.HandlerFunc {
 		}
 
 		userID, ok1 := claims["user_id"].(float64)
-		email, ok2 := claims["email"].(string)
+		role, ok2 := claims["role"].(string)
 		username, ok3 := claims["username"].(string)
 		if !ok1 || !ok2 || !ok3 {
 			http.Error(w, "Invalid token data", http.StatusUnauthorized)
 			return
 		}
 
+		now := time.Now()
+
 		// Создаём новый access token
 		newAccessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 			"user_id":  int(userID),
-			"email":    email,
 			"username": username,
-			"exp":      time.Now().Add(15 * time.Minute).Unix(),
+			"role":     role,
+			"iat":      now.Unix(),
+			"nbf":      now.Unix(),
+			"exp":      now.Add(15 * time.Minute).Unix(),
 		})
 
 		accessTokenString, err := newAccessToken.SignedString(jwtSecret)
@@ -64,7 +67,5 @@ func RefreshHandler() http.HandlerFunc {
 			SameSite: http.SameSiteLaxMode,
 			Secure:   false,
 		})
-
-		json.NewEncoder(w).Encode(map[string]string{"message": "Access token refreshed"})
 	}
 }

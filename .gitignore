@@ -4,6 +4,7 @@ client/dist
 
 # ФАЙЛ КОНФИГУРАЦИИ
 .env
+.sql
 certificate_ca.crt
 certificate.key
 certificate.crt

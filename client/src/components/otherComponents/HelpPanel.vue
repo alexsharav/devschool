@@ -67,18 +67,19 @@
     <div class="send-email">
       <h1 class="send-email-text">Напиши нам письмо</h1>
 
-      <form class="email-form">
+      <form class="email-form" @submit.prevent="helpPanelMessage">
         <div class="name-fields">
-          <input type="text" placeholder="Имя" />
-          <input type="text" placeholder="Фамилия" />
+          <input type="text" v-model="userName" placeholder="Имя" />
+          <input type="text" v-model="userSecondName" placeholder="Фамилия" />
         </div>
 
-        <input type="email" placeholder="Email*" required />
+        <input type="email" v-model="userEmail" placeholder="Email*" required />
 
         <textarea
           class="resize-textarea"
           placeholder="Сообщение"
           rows="6"
+          v-model="userMessage"
         ></textarea>
 
         <button type="submit" class="submit-button">Отправить</button>
@@ -90,18 +91,12 @@
 <script setup>
 import { ref } from "vue";
 
-const helpData = ref({
-  userName: undefined,
-  userSecondName: undefined,
-  userEmail: undefined,
-  userMessage: undefined,
-});
+const userName = ref("");
+const userSecondName = ref("");
+const userEmail = ref("");
+const userMessage = ref("");
 
-function helpSetter(fieldName, newValue) {
-  if (Boolean(newValue)) {
-    helpData.value[fieldName] = newValue;
-  }
-}
+async function helpPanelMessage() {}
 </script>
 
 <style scoped>

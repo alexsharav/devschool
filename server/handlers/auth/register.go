@@ -24,40 +24,40 @@ func RegisterHandler(db *sql.DB, client string) http.HandlerFunc {
 
 		var req models.RegisterRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, "Invalid input", http.StatusBadRequest)
+			http.Error(w, "Неправильный ввод", http.StatusBadRequest)
 			return
 		}
 
 		if !captcha.Verify(req.Token) {
-			http.Error(w, "reCAPTCHA verification failed", http.StatusForbidden)
+			http.Error(w, "Проблема reCAPTCHA", http.StatusForbidden)
 			return
 		}
 
 		var exists bool
 		err := db.QueryRow("SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)", req.Email).Scan(&exists)
 		if err != nil {
-			http.Error(w, "DB error", http.StatusInternalServerError)
+			http.Error(w, "Проблема регистрации", http.StatusInternalServerError)
 			return
 		}
+
 		if exists {
-			http.Error(w, "Email already registered", http.StatusBadRequest)
+			http.Error(w, "Проблема регистрации", http.StatusBadRequest)
 			return
 		}
 
 		hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 		if err != nil {
-			http.Error(w, "Hashing failed", http.StatusInternalServerError)
+			http.Error(w, "Проблема регистрации", http.StatusInternalServerError)
 			return
 		}
 
 		_, err = db.Exec("INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
 			req.Username, req.Email, string(hash))
 		if err != nil {
-			http.Error(w, "Insert failed", http.StatusInternalServerError)
+			http.Error(w, "Проблема регистрации", http.StatusInternalServerError)
 			return
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(`{"success": true}`))
 	}
 }

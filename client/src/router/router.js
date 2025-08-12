@@ -5,6 +5,7 @@ import LoginView from "@/pages/auth/Login.view.vue";
 import CoursesView from "@/pages/mainPages/Courses.view.vue";
 import TestsView from "@/pages/mainPages/Tests.view.vue";
 import MediaView from "@/pages/mainPages/Media.view.vue"
+import ProfileView from "@/pages/userPages/Profile.view.vue"
 
 const routes = [
   {
@@ -14,15 +15,21 @@ const routes = [
     component: HomeView,
   },
   {
+    path: "/profile",
+    name: "profile",
+    meta: { title: "Профиль" },
+    component: ProfileView,
+  },
+  {
     path: "/media",
     name: "media",
-    meta: { title: "Дев.Школа Медиа" },
+    meta: { title: "Медиа" },
     component: MediaView,
   },
   {
     path: "/login",
     name: "login",
-    meta: { title: "Авторизация" },
+    meta: { title: "Аутентификация" },
     component: LoginView,
   },
   {

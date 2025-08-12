@@ -7,6 +7,7 @@ p {
   border: 1px solid black;
   border-radius: 20px;
   padding: 10px;
+  text-align: center;
 }
 
 @media (max-width: 600px) {
