@@ -7,15 +7,18 @@ import (
 	"time"
 )
 
-var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
-
-func RefreshHandler() http.HandlerFunc {
+func RefreshHandler(client string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", client)
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
 		refreshCookie, err := r.Cookie("refresh_token")
 		if err != nil {
 			http.Error(w, "Refresh token not found", http.StatusUnauthorized)
 			return
 		}
+
+		var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 		token, err := jwt.Parse(refreshCookie.Value, func(token *jwt.Token) (interface{}, error) {
 			return jwtSecret, nil
@@ -44,12 +47,12 @@ func RefreshHandler() http.HandlerFunc {
 
 		// Создаём новый access token
 		newAccessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"user_id":  int(userID),
+			"user_id":  userID,
 			"username": username,
 			"role":     role,
 			"iat":      now.Unix(),
 			"nbf":      now.Unix(),
-			"exp":      now.Add(15 * time.Minute).Unix(),
+			"exp":      now.Add(60 * time.Minute).Unix(),
 		})
 
 		accessTokenString, err := newAccessToken.SignedString(jwtSecret)
@@ -62,10 +65,10 @@ func RefreshHandler() http.HandlerFunc {
 			Name:     "access_token",
 			Value:    accessTokenString,
 			Path:     "/",
-			Expires:  time.Now().Add(15 * time.Minute),
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
-			Secure:   false,
+			Secure:   false, // на HTTPS выставь true и SameSite=None
+			MaxAge:   int((1 * time.Hour).Seconds()),
 		})
 	}
 }

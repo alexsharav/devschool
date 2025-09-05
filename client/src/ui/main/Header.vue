@@ -85,9 +85,8 @@
 <script setup>
 import devschoolPNG from "@/assets/devschool.png";
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import token from "@/modules/tokens/token";
 import router from "@/router/router";
-
+import { checktoken as checkToken } from "@/modules/tokens/tokenchecker";
 const showMenu = ref(false);
 
 function toggleMenu() {
@@ -119,14 +118,19 @@ function onLeave(el) {
   el.style.opacity = "0";
 }
 
-function profileButton() {
-  if (token.getAccessToken()) router.push("/profile");
-  else router.push("/login");
+async function profileButton() {
+  const hasToken = await checkToken();
+
+  if (hasToken) {
+    router.push("/profile");
+  } else {
+    router.push("/login");
+  }
 }
 
-function onMobileProfile() {
+async function onMobileProfile() {
   closeMenu();
-  profileButton();
+  await profileButton();
 }
 
 /* Закрывать меню при ресайзе на десктоп */
@@ -160,6 +164,7 @@ onBeforeUnmount(() => window.removeEventListener("resize", handleResize));
   border: 1px solid rgb(221, 221, 221);
   border-radius: 16px;
 }
+
 .header-fixer {
   border-radius: 16px 16px 0 0;
 }
@@ -204,6 +209,7 @@ onBeforeUnmount(() => window.removeEventListener("resize", handleResize));
   border: none;
   background: transparent;
 }
+
 .profile-link {
   background: rgb(59, 59, 59);
   color: #fff;
@@ -215,8 +221,9 @@ onBeforeUnmount(() => window.removeEventListener("resize", handleResize));
   cursor: pointer;
   transition: background 0.25s ease;
 }
+
 .profile-link:hover {
-  background: #555555;
+  background: #272727;
 }
 
 .display-button {

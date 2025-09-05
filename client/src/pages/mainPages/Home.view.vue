@@ -422,7 +422,6 @@ import HelpPanel from "@/components/otherComponents/HelpPanel.vue";
   margin-top: 70px;
   padding: 20px;
   border-radius: 20px;
-  border: 1px solid purple;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

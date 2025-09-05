@@ -102,7 +102,7 @@
 
         <div class="divider">или</div>
 
-        <router-link class="login-link" to="/registration">
+        <router-link class="login-link" to="/register">
           Зарегистрировать новый аккаунт
         </router-link>
 

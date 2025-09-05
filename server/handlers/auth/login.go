@@ -13,18 +13,6 @@ import (
 	"time"
 )
 
-var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
-
-type loginResponse struct {
-	AccessToken string `json:"access_token"`
-	User        struct {
-		ID       int    `json:"id"`
-		Username string `json:"username"`
-		Role     string `json:"role"`
-		Email    string `json:"email"`
-	} `json:"user"`
-}
-
 func LoginHandler(db *sql.DB, client string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// CORS / типы
@@ -47,6 +35,9 @@ func LoginHandler(db *sql.DB, client string) http.HandlerFunc {
 			http.Error(w, "Ошибка с методом", http.StatusMethodNotAllowed)
 			return
 		}
+
+		jwtSecret := []byte(os.Getenv("JWT_SECRET"))
+
 		if len(jwtSecret) == 0 {
 			http.Error(w, "Проблема с конфигурацией сервера", http.StatusInternalServerError)
 			return
@@ -94,7 +85,7 @@ func LoginHandler(db *sql.DB, client string) http.HandlerFunc {
 			"role":     role,
 			"iat":      now.Unix(),
 			"nbf":      now.Unix(),
-			"exp":      now.Add(15 * time.Minute).Unix(),
+			"exp":      now.Add(60 * time.Minute).Unix(),
 		})
 		accessTokenString, err := accessToken.SignedString(jwtSecret)
 		if err != nil {
@@ -130,16 +121,14 @@ func LoginHandler(db *sql.DB, client string) http.HandlerFunc {
 			MaxAge:   int((30 * 24 * time.Hour).Seconds()),
 		})
 
-		// Отдаём access_token в теле ответа (клиент хранит его в памяти и  шлёт в Authorization)
-		resp := loginResponse{
-			AccessToken: accessTokenString,
-		}
-		resp.User.ID = userID
-		resp.User.Username = username
-		resp.User.Role = role
-		resp.User.Email = email
-
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(resp)
+		http.SetCookie(w, &http.Cookie{
+			Name:     "access_token",
+			Value:    accessTokenString,
+			Path:     "/",
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+			Secure:   false, // на HTTPS выставь true и SameSite=None
+			MaxAge:   1,
+		})
 	}
 }

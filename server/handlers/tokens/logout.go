@@ -1,13 +1,14 @@
 package tokens
 
 import (
-	"encoding/json"
 	"net/http"
 )
 
-func LogoutHandler() http.HandlerFunc {
+func LogoutHandler(client string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Удаляем куки, установив MaxAge < 0
+		w.Header().Set("Access-Control-Allow-Origin", client)
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
 		expiredCookie := func(name string) *http.Cookie {
 			return &http.Cookie{
 				Name:     name,
@@ -20,9 +21,7 @@ func LogoutHandler() http.HandlerFunc {
 			}
 		}
 
-		http.SetCookie(w, expiredCookie("access_token"))
 		http.SetCookie(w, expiredCookie("refresh_token"))
-
-		json.NewEncoder(w).Encode(map[string]string{"message": "Logged out successfully"})
+		http.SetCookie(w, expiredCookie("access_token"))
 	}
 }
